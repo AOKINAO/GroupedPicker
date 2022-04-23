@@ -6,10 +6,7 @@ import PackageDescription
 let package = Package(
     name: "GroupedPicker",
     platforms: [
-        .iOS(.v13),
-        .macOS(.v11),
-        .tvOS(.v13),
-        .watchOS(.v6)
+        .macOS(.v11)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
