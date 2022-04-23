@@ -28,7 +28,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
         _deselectItems = deselectItems
     }
     
-    // MARK: Public Functions
+    // MARK: Public NSViewRepresentable Functions
     
     /// NSViewを作成する
     /// - Parameter context: GroupedPickerCoordinator
@@ -91,8 +91,8 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     private func listedItems(nodes: [T], prefix: String = "") -> [ListedItem] {
         nodes.reduce(into: [ListedItem]()) {
             if let children = $1.children {
-                $0.append(ListedItem(name: $1.name, node: $1))
-                $0 += listedItems(nodes: children, prefix: prefix + " ")
+                $0.append(ListedItem(name: prefix + $1.name, node: $1))
+                $0 += listedItems(nodes: children, prefix: prefix + "  ")
             } else {
                 $0.append(ListedItem(name: prefix + $1.name, node: $1))
             }
@@ -121,7 +121,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
             }(item)
             menuItem.image = item.isGroup
                 ? NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
-                : nil
+                : NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
             return menuItem
         }
         if let index = listedItems.firstIndex(where: { $0.node == selected }) {
@@ -152,7 +152,10 @@ struct GroupedPicker_Previews: PreviewProvider {
     static let cities: [City] = [
         City(name: "Asia",
              children: [
-                City(name: "Japan", children: nil),
+                City(name: "Japan", children: [
+                    City(name: "Tokyo", children: nil),
+                    City(name: "Osaka", children: nil)
+                ]),
                 City(name: "China", children: nil)
              ]
             ),
