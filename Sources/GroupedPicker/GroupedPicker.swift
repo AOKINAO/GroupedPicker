@@ -16,6 +16,12 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     /// 表示はするが、選択できないアイテム。例えば、すでに選択されているアイテムを選択できないようにする時などに使用する
     var deselectItems: [T]
     
+    /// フォルダーアイコン
+    var folderImage = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
+    
+    /// 選択肢アイコン
+    var itemImage = NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
+
     // MARK: Initializers
     
     /// イニシャライザー
@@ -131,9 +137,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
                 }
                 return !deselectItems.contains($0.node)
             }(item)
-            menuItem.image = item.isGroup
-            ? NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
-            : NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
+            menuItem.image = item.isGroup ? folderImage : itemImage
             return menuItem
         }
         if let index = listedItems.firstIndex(where: { $0.node == selected }) {
