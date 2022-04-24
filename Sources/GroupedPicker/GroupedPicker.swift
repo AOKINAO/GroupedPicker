@@ -29,7 +29,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     ///   - items: ピッカーに表示する要素
     ///   - selection: 選択する要素
     ///   - deselectItems: 選択できない要素
-    init(items: [T], selection: Binding<T?>) {
+    public init(items: [T], selection: Binding<T?>) {
         self.items = items
         _selection = selection
     }
