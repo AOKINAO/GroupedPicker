@@ -173,7 +173,7 @@ extension GroupedPicker {
         var view = self
         view.deselectItems = items
         print(items)
-        return self
+        return view
     }
 }
 
