@@ -4,17 +4,17 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     
     // MARK: Bindings
     
-    /// 選択されているアイテム
+    /// 選択されている要素
     @Binding var selection: T?
     
     // MARK: Properties
     
-    /// ピッカーに表示するアイテム
+    /// ピッカーに表示する要素
     private var items: [T]
     
-    /// 選択できないアイテム
-    /// 表示はするが、選択できないアイテム。例えば、すでに選択されているアイテムを選択できないようにする時などに使用する
-    private var deselectItems: [T]
+    /// 選択できない要素
+    /// 表示はするが、選択できない要素。例えば、すでに選択されている要素を選択できないようにする時などに使用する
+    private var deselectItems: [T] = []
     
     /// フォルダーアイコン
     private var folderImage = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
@@ -26,13 +26,12 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     
     /// イニシャライザー
     /// - Parameters:
-    ///   - items: ピッカーに表示するアイテム
-    ///   - selection: 選択するアイテム
-    ///   - deselectItems: 選択できないアイテム
-    init(items: [T], selection: Binding<T?>, deselectItems: [T] = []) {
+    ///   - items: ピッカーに表示する要素
+    ///   - selection: 選択する要素
+    ///   - deselectItems: 選択できない要素
+    init(items: [T], selection: Binding<T?>) {
         self.items = items
         _selection = selection
-        self.deselectItems = deselectItems
     }
     
     // MARK: Public NSViewRepresentable Functions
@@ -155,7 +154,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
 // MARK: Modifiers
 
 extension GroupedPicker {
-    /// フォルダアイコン、アイテムアイコンを変更する
+    /// フォルダアイコン、要素アイコンを変更する
     /// - Parameters:
     ///   - folderImage: フォルダーにつけるアイコン
     ///   - itemImage: 要素につけるアイコン
@@ -165,6 +164,16 @@ extension GroupedPicker {
         view.folderImage = folderImage
         view.itemImage = itemImage
         return view
+    }
+    
+    /// 選択できない要素を設定する
+    /// - Parameter items: 設定できない要素の配列
+    /// - Returns: GroupedPicker
+    func deselectItems(_ items: [T]) -> GroupedPicker {
+        var view = self
+        view.deselectItems = items
+        print(items)
+        return self
     }
 }
 
@@ -215,10 +224,17 @@ struct GroupedPicker_Previews: PreviewProvider {
     
     static var previews: some View {
         HStack {
+            let deselectItems: [City] = {
+                if let children = cities[0].children {
+                    return [children[0], children[0]]
+                }
+                return [City]()
+            }()
             GroupedPicker(items: cities, selection: .constant(cities[1].children?[1]))
+                .deselectItems([cities[1].children![0]])
                 .menuImage(
-                    folderImage: NSImage(systemSymbolName: "circle", accessibilityDescription: nil),
-                    itemImage: NSImage(systemSymbolName: "circle.circle", accessibilityDescription: nil))
+                    folderImage: NSImage(systemSymbolName: "circle.circle", accessibilityDescription: nil),
+                    itemImage: NSImage(systemSymbolName: "circle", accessibilityDescription: nil))
             List(cities, children: \.children) { item in
                 Text(item.name)
             }
