@@ -5,33 +5,33 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     // MARK: Bindings
     
     /// 選択されているアイテム
-    @Binding var selected: T?
+    @Binding var selection: T?
     
     // MARK: Properties
     
     /// ピッカーに表示するアイテム
-    var items: [T]
+    private var items: [T]
     
     /// 選択できないアイテム
     /// 表示はするが、選択できないアイテム。例えば、すでに選択されているアイテムを選択できないようにする時などに使用する
-    var deselectItems: [T]
+    private var deselectItems: [T]
     
     /// フォルダーアイコン
-    var folderImage = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
+    private var folderImage = NSImage(systemSymbolName: "folder", accessibilityDescription: nil)
     
     /// 選択肢アイコン
-    var itemImage = NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
-
+    private var itemImage = NSImage(systemSymbolName: "doc", accessibilityDescription: nil)
+    
     // MARK: Initializers
     
     /// イニシャライザー
     /// - Parameters:
     ///   - items: ピッカーに表示するアイテム
-    ///   - selected: 選択するアイテム
+    ///   - selection: 選択するアイテム
     ///   - deselectItems: 選択できないアイテム
-    init(items: [T], selected: Binding<T?>, deselectItems: [T] = []) {
+    init(items: [T], selection: Binding<T?>, deselectItems: [T] = []) {
         self.items = items
-        _selected = selected
+        _selection = selection
         self.deselectItems = deselectItems
     }
     
@@ -62,6 +62,9 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
         GroupedPickerCoordinator(self)
     }
     
+    // MARK: Public Functions
+    
+    
     // MARK: Public Classes
     
     /// コーディネーター
@@ -83,7 +86,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
                 return
             }
             let selectedIndex = popUpButton.indexOfSelectedItem
-            groupedPicker.selected = groupedPicker.items[selectedIndex]
+            groupedPicker.selection = groupedPicker.items[selectedIndex]
         }
     }
     
@@ -140,13 +143,29 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
             menuItem.image = item.isGroup ? folderImage : itemImage
             return menuItem
         }
-        if let index = listedItems.firstIndex(where: { $0.node == selected }) {
+        if let index = listedItems.firstIndex(where: { $0.node == selection }) {
             popUpButton.selectItem(at: index)
         } else if let index = listedItems.firstIndex(where: { !$0.isGroup }) {
             popUpButton.selectItem(at: index)
         }
     }
     
+}
+
+// MARK: Modifiers
+
+extension GroupedPicker {
+    /// フォルダアイコン、アイテムアイコンを変更する
+    /// - Parameters:
+    ///   - folderImage: フォルダーにつけるアイコン
+    ///   - itemImage: 要素につけるアイコン
+    /// - Returns: GroupedPicker
+    func menuImage(folderImage: NSImage? = nil, itemImage: NSImage? = nil) -> GroupedPicker {
+        var view = self
+        view.folderImage = folderImage
+        view.itemImage = itemImage
+        return view
+    }
 }
 
 /// GroupedPickerを使うためのプロトコル
@@ -193,19 +212,22 @@ struct GroupedPicker_Previews: PreviewProvider {
         case chocolate, vanilla, strawberry
         var id: Self { self }
     }
-
+    
     static var previews: some View {
         HStack {
-        GroupedPicker(items: cities, selected: .constant(cities[1].children?[1]))
-        List(cities, children: \.children) { item in
-            Text(item.name)
-        }
-        List {
-            Picker("Fravor", selection: .constant(Flavor.chocolate)) {
-                Text("Chocolate").tag(Flavor.chocolate)
-                Text("Vanilla").tag(Flavor.vanilla)
+            GroupedPicker(items: cities, selection: .constant(cities[1].children?[1]))
+                .menuImage(
+                    folderImage: NSImage(systemSymbolName: "circle", accessibilityDescription: nil),
+                    itemImage: NSImage(systemSymbolName: "circle.circle", accessibilityDescription: nil))
+            List(cities, children: \.children) { item in
+                Text(item.name)
             }
-        }
+            List {
+                Picker("Fravor", selection: .constant(Flavor.chocolate)) {
+                    Text("Chocolate").tag(Flavor.chocolate)
+                    Text("Vanilla").tag(Flavor.vanilla)
+                }
+            }
         }
     }
 }
