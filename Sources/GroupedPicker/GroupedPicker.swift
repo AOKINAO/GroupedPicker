@@ -29,7 +29,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     ///   - items: ピッカーに表示する要素
     ///   - selection: 選択する要素
     ///   - deselectItems: 選択できない要素
-    init(items: [T], selection: Binding<T?>) {
+    public init(items: [T], selection: Binding<T?>) {
         self.items = items
         _selection = selection
     }
@@ -159,7 +159,7 @@ extension GroupedPicker {
     ///   - folderImage: フォルダーにつけるアイコン
     ///   - itemImage: 要素につけるアイコン
     /// - Returns: GroupedPicker
-    func menuImage(folderImage: NSImage? = nil, itemImage: NSImage? = nil) -> GroupedPicker {
+    public func menuImage(folderImage: NSImage? = nil, itemImage: NSImage? = nil) -> GroupedPicker {
         var view = self
         view.folderImage = folderImage
         view.itemImage = itemImage
@@ -169,7 +169,7 @@ extension GroupedPicker {
     /// 選択できない要素を設定する
     /// - Parameter items: 設定できない要素の配列
     /// - Returns: GroupedPicker
-    func deselectItems(_ items: [T]) -> GroupedPicker {
+    public func deselectItems(_ items: [T]) -> GroupedPicker {
         var view = self
         view.deselectItems = items
         print(items)
