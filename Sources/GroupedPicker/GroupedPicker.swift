@@ -4,16 +4,17 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     
     // MARK: Bindings
     
-    /// ピッカーに表示するアイテム
-    @Binding var items: [T]
-    
     /// 選択されているアイテム
     @Binding var selected: T?
     
-    /// 選択できないアイテム
-    @Binding var deselectItems: [T]?
-    
     // MARK: Properties
+    
+    /// ピッカーに表示するアイテム
+    var items: [T]
+    
+    /// 選択できないアイテム
+    /// 表示はするが、選択できないアイテム。例えば、すでに選択されているアイテムを選択できないようにする時などに使用する
+    var deselectItems: [T]
     
     // MARK: Initializers
     
@@ -22,10 +23,10 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     ///   - items: ピッカーに表示するアイテム
     ///   - selected: 選択するアイテム
     ///   - deselectItems: 選択できないアイテム
-    init(items: Binding<[T]>, selected: Binding<T?>, deselectItems: Binding<[T]?> = .constant(nil)) {
-        _items = items
+    init(items: [T], selected: Binding<T?>, deselectItems: [T] = []) {
+        self.items = items
         _selected = selected
-        _deselectItems = deselectItems
+        self.deselectItems = deselectItems
     }
     
     // MARK: Public NSViewRepresentable Functions
@@ -128,9 +129,6 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
                 if $0.isGroup {
                     return false
                 }
-                guard let deselectItems = deselectItems else {
-                    return true
-                }
                 return !deselectItems.contains($0.node)
             }(item)
             menuItem.image = item.isGroup
@@ -194,7 +192,7 @@ struct GroupedPicker_Previews: PreviewProvider {
 
     static var previews: some View {
         HStack {
-        GroupedPicker(items: .constant(cities), selected: .constant(cities[1].children?[1]))
+        GroupedPicker(items: cities, selected: .constant(cities[1].children?[1]))
         List(cities, children: \.children) { item in
             Text(item.name)
         }
