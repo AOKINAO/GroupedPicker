@@ -224,14 +224,8 @@ struct GroupedPicker_Previews: PreviewProvider {
     
     static var previews: some View {
         HStack {
-            let deselectItems: [City] = {
-                if let children = cities[0].children {
-                    return [children[0], children[0]]
-                }
-                return [City]()
-            }()
             GroupedPicker(items: cities, selection: .constant(cities[1].children?[1]))
-                .deselectItems([cities[1].children![0]])
+                .deselectItems([cities[1].children![0], cities[1].children![2]])
                 .menuImage(
                     folderImage: NSImage(systemSymbolName: "circle.circle", accessibilityDescription: nil),
                     itemImage: NSImage(systemSymbolName: "circle", accessibilityDescription: nil))
