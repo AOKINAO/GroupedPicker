@@ -5,7 +5,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     // MARK: Bindings
     
     /// 選択されている要素
-    @Binding var selection: T?
+    @Binding var selection: T
     
     // MARK: Properties
     
@@ -30,7 +30,7 @@ public struct GroupedPicker<T>: NSViewRepresentable where T: GroupedPickerItem {
     ///   - items: ピッカーに表示する要素
     ///   - selection: 選択する要素
     ///   - deselectItems: 選択できない要素
-    public init(items: [T], selection: Binding<T?>) {
+    public init(items: [T], selection: Binding<T>) {
         self.items = items
         _selection = selection
         listedItems = listedItems(nodes: items)
@@ -201,33 +201,38 @@ struct City: GroupedPickerItem {
 struct GroupedPicker_Previews: PreviewProvider {
     
     static let cities: [City] = [
+        City(title: "北海道"),
         City(
-            title: "Asia",
+            title: "東北",
             children: [
-                City(title: "Japan", children: [
-                    City(title: "Tokyo", children: nil, selectable: true),
-                    City(title: "Osaka", children: nil)
-                ]),
-                City(title: "China", children: nil)
+                City(title: "青森"),
+                City(title: "岩手"),
+                City(title: "宮城"),
+                City(title: "秋田"),
+                City(title: "山形"),
+                City(title: "福島")
             ]
         ),
         City(
-            title: "Europ",
+            title: "関東",
             children: [
-                City(title: "Fra", children: nil),
-                City(title: "Ita", children: nil),
-                City(title: "Dot", children: nil)
+                City(title: "茨城"),
+                City(title: "栃木"),
+                City(title: "群馬"),
+                City(title: "埼玉"),
+                City(title: "千葉"),
+                City(title: "東京", children: [
+                    City(title: "区内"),
+                    City(title: "区外")
+                ]),
+                City(title: "神奈川県")
             ]
         )
     ]
     
     static var previews: some View {
         HStack {
-            GroupedPicker(items: cities, selection: .constant(cities[0].children?[0]))
-                .menuImage(
-                    folderImage: NSImage(systemSymbolName: "circle.circle", accessibilityDescription: nil),
-                    itemImage: NSImage(systemSymbolName: "circle", accessibilityDescription: nil))
-                .groupSelectable(true)
+            GroupedPicker(items: cities, selection: .constant(cities[0]))
         }
     }
 }
