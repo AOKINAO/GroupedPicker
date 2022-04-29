@@ -1,3 +1,4 @@
 # GroupedPicker
 
-A description of this package.
+macOSのNSPopupButtonを、SwiftUIで利用するためのView.
+
