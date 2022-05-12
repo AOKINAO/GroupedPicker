@@ -1,6 +1,13 @@
 # GroupedPicker
 
-macOSのNSPopupButtonを、SwiftUIで利用するためのView.
+macOSにおいて、NSPopupButtonをSwiftUIで利用するためのView.
+
+## 製作理由
+
+SwiftUIの標準のPickerでは、階層的なメニューを作りにくく、また、選択できないメニューを作ることも困難である。
+macOSであれば、NSPopupButtonを使うことで、簡単に実装することができる。
+
+## 概略
 
 NSPopupButtonに表示させたいメニュー項目をGroupedPickerItemプロトコルに適合した配列に入れることで、階層的なポップアップボタンを作成することができる。
 
